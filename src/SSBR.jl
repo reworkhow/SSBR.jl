@@ -1,5 +1,7 @@
 module SSBR
 
-# package code goes here
+include("ssFunctions.jl")
+include("ssGibbs.jl")
+include("ssMME.jl")
 
 end # module
