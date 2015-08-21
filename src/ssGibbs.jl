@@ -72,7 +72,10 @@ function sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0
     return yCorr
 end
 
-function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num)
+function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter)
+    
+    vAlpha = vG/all_num.num_markers
+    
     y = all_y.y
     X = all_X.X
     W = all_W.W

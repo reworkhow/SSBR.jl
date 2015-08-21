@@ -172,7 +172,3 @@ function make_XWMats(all_J,all_Z,all_M,all_num)#now fixed effects: μ
     W  = [W1;W2];
     return XMats(X,X1,X2),WMats(W,W1,W2)
 end
-
-function test123()
-    a=3
-end
