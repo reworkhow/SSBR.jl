@@ -23,13 +23,13 @@ nIter  = 50000
 vRes   = 1.0
 vG     = 1.0
 vAlpha = vG/numSSBayes.num_markers
-aHat,alphaHat,betaHat,epsiHat=ssGibbs(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes);
+aHat,alphaHat,betaHat,epsiHat=ssGibbs(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes,vRes,vG,nIter);
 
 #Mixed Model Equation
 vRes   = 1.0
 vG     = 1.0
 vAlpha = vG/numSSBayes.num_markers
-aHat2,alphaHat2,betaHat2,epsiHat2=ssMME(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes);
+aHat2,alphaHat2,betaHat2,epsiHat2=ssMME(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes,vRes,vG,nIter);
 
 #check accuracy
 df = readtable("example/bv.txt", eltypes =[UTF8String, Float64], separator = ' ',header=false)
