@@ -104,7 +104,7 @@ function make_MMats(df,all_A,ped)
     return MMats(M,M1,M2)
 end
 
-function make_yVecs(file,all_num)
+function make_yVecs(file,ped,all_num)
     df = readtable(file, eltypes=[UTF8String, Float64], separator = ' ',header=false)
     num_y = size(df,1)
 
