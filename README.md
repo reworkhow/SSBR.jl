@@ -10,10 +10,10 @@ SSBR is a tool for single step Bayesian regression analyses.
 ```Julia
 using SSBR
 
-ped,A_Mats,numSSBayes = calc_Ai("../simulation/ped.txt","../simulation/genotype.ID")
-df    = read_genotypes("../simulation/genotype.txt",numSSBayes)
+ped,A_Mats,numSSBayes = calc_Ai("example/ped.txt","example/genotype.ID")
+df    = read_genotypes("example/genotype.txt",numSSBayes)
 M_Mats = make_MMats(df,A_Mats,ped)
-y_Vecs = make_yVecs("../simulation/phenotype.txt",numSSBayes)
+y_Vecs = make_yVecs("example/phenotype.txt",numSSBayes)
 J_Vecs = make_JVecs(numSSBayes,A_Mats)
 Z_Mats = make_ZMats(ped,y_Vecs,numSSBayes)
 X_Mats, W_Mats = make_XWMats(J_Vecs,Z_Mats,M_Mats,numSSBayes)
@@ -32,7 +32,7 @@ vAlpha = vG/numSSBayes.num_markers
 aHat2,alphaHat2,betaHat2,epsiHat2=ssMME(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes);
 
 #check accuracy
-df = readtable("../simulation/bv.txt", eltypes =[UTF8String, Float64], separator = ' ',header=false)
+df = readtable("example/bv.txt", eltypes =[UTF8String, Float64], separator = ' ',header=false)
 a  = Array(Float64,numSSBayes.num_ped)
 for (i,ID) in enumerate(df[:,1])
      j = ped.idMap[ID].seqID
