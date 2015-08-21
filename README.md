@@ -13,7 +13,7 @@ using SSBR
 ped,A_Mats,numSSBayes = calc_Ai("example/ped.txt","example/genotype.ID")
 df    = read_genotypes("example/genotype.txt",numSSBayes)
 M_Mats = make_MMats(df,A_Mats,ped)
-y_Vecs = make_yVecs("example/phenotype.txt",numSSBayes)
+y_Vecs = make_yVecs("example/phenotype.txt",ped,numSSBayes)
 J_Vecs = make_JVecs(numSSBayes,A_Mats)
 Z_Mats = make_ZMats(ped,y_Vecs,numSSBayes)
 X_Mats, W_Mats = make_XWMats(J_Vecs,Z_Mats,M_Mats,numSSBayes)
