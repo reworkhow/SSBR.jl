@@ -23,7 +23,7 @@ nIter  = 50000
 vRes   = 1.0
 vG     = 1.0
 vAlpha = vG/numSSBayes.num_markers
-aHat,alphaHat,betaHat,epsiHat=ssGibbs(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes,myEP);
+aHat,alphaHat,betaHat,epsiHat=ssGibbs(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes);
 
 #Mixed Model Equation
 vRes   = 1.0
