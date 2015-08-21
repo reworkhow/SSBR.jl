@@ -72,7 +72,7 @@ function sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0
     return yCorr
 end
 
-function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,myEP)
+function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num)
     y = all_y.y
     X = all_X.X
     W = all_W.W
@@ -82,7 +82,6 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,myEP)
     yCorr= y - mu
 
     β    = [mu, 0.0]
-    #β    = [0.542796, 5.41445 ]
     α  = zeros(Float64,all_num.num_markers)
     ϵ  = zeros(Float64,all_num.num_g1)
 
@@ -110,9 +109,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,myEP)
       end
     end
 
-    meanBeta = [0.542796, 5.41445 ]
     mu_g = meanBeta[2]
-
 
     alpha_hat = meanAlpha
     epsi_hat  = meanEpsi
