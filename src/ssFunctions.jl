@@ -67,24 +67,44 @@ function calc_Ai(pedfile,genoID;calculateInbreeding=true)
     return ped,AMats(Ai,Ai11,Ai12),NumSSBayes(num_ped,num_nongeno,num_geno,0,0,0,0)
 end
 
-function read_genotypes(file,all_num,header=false,rowID=true)
+function read_genotypes(file,all_num;rowID=true,centering=false)
 
     #get number of markers
     f=open(file)
     if rowID == true
       len_ebv = length(split(readline(f)))
       num_markers  = len_ebv - 1
+    else
+      len_ebv = length(split(readline(f)))
+      num_markers  = len_ebv
     end
     close(f)
 
     all_num.num_markers = num_markers
     #set types for each column
     etv= Array(DataType,len_ebv)
-    fill!(etv,Int64)
-    etv[1]=UTF8String
+    fill!(etv,Float64)
+    
+    if rowID==true
+        etv[1]=UTF8String
+    end
 
     #read genotypes
     df = readtable(file, eltypes=etv, separator = ' ',header=false)
+    
+    if centering ==true
+        if rowID==false
+            col_index = 1
+        else
+            col_index = 2
+        end
+        
+        for i =1:num_markers
+            df[:,col_index]=df[:,col_index]-mean(df[:,col_index])
+            col_index += 1
+        end
+    end        
+    
     return df
 end
 
