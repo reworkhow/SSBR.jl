@@ -1,4 +1,4 @@
-function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter)
+function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG)
 
     vAlpha = vG/all_num.num_markers
     λ1 = vRes/vG
