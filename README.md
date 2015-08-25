@@ -27,7 +27,7 @@ aHat,alphaHat,betaHat,epsiHat=ssGibbs(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,
 #Mixed Model Equation
 vRes   = 1.0
 vG     = 1.0
-aHat2,alphaHat2,betaHat2,epsiHat2=ssMME(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes,vRes,vG,nIter);
+aHat2,alphaHat2,betaHat2,epsiHat2=ssMME(M_Mats,y_Vecs,J_Vecs,Z_Mats,X_Mats,W_Mats,A_Mats,numSSBayes,vRes,vG);
 
 #check accuracy
 df = readtable("example/bv.txt", eltypes =[UTF8String, Float64], separator = ' ',header=false)
