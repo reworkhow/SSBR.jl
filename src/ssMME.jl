@@ -28,13 +28,20 @@ function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter)
     sol =lhs\rhs
 
     #get EBVs
-    mu_g = sol[2]
-    alpha_hat=sol[3:(3+num_markers-1)]
-    epsi_hat = sol[(3+num_markers):(3+num_markers+num_nongeno-1)]
+    end_fixed     =size(X,2)
+    start_marker  =end_fixed+1
+    end_marker    =start_marker+num_markers-1
+    start_epsi    =end_marker+1
+    end_epsi      =stat_epsi+num_nongeno-1
+
+    beta_hat = sol[1:end_fixed]
+    mu_g = sol[end_fixed]
+    alpha_hat=sol[start_marker:end_marker]
+    epsi_hat = sol[start_epsi:end_epsi]
 
     aHat = J*mu_g+M*alpha_hat
     aHat[1:num_nongeno,:] += epsi_hat
-    return aHat,alpha_hat,sol[1:2],epsi_hat
+    return aHat,alpha_hat,beta_hat,epsi_hat
 end
 
 
