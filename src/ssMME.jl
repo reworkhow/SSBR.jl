@@ -32,7 +32,7 @@ function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG)
     start_marker  =end_fixed+1
     end_marker    =start_marker+num_markers-1
     start_epsi    =end_marker+1
-    end_epsi      =stat_epsi+num_nongeno-1
+    end_epsi      =start_epsi+num_nongeno-1
 
     beta_hat = sol[1:end_fixed]
     mu_g = sol[end_fixed]
