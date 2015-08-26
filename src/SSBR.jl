@@ -13,5 +13,6 @@ export make_ZMats
 export make_XWMats
 export ssGibbs
 export ssMME
+export PBLUP
 
 end # module
