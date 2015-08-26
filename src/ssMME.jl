@@ -63,14 +63,22 @@ end
 # #2  0.799
 
 # #PBLUP
-# num_obs=length(y)
-# pX = ones(num_obs)
+function PBLUP(all_y,all_Z,all_A,all_num,vRes,vG)
+    num_obs=length(all_y.y)
+    pX = ones(num_obs)
+    λ1 = vRes/vG
+    y  = all_y.y
+    Z  = all_Z.Z
+    Ai = All_A.Ai
 
-# lhs = [hcat(pX'pX,    pX'Z );
-#        hcat(Z'pX,    Z'Z+Ai*λ1)]
-# rhs = [pX'y; Z'y]
-# sol =lhs\rhs
-# aHat = sol[2:length(sol)]
+    lhs = [hcat(pX'pX,    pX'Z );
+            hcat(Z'pX,    Z'Z+Ai*λ1)]
+    rhs = [pX'y; Z'y]
+    sol =lhs\rhs
+    aHat = sol[2:length(sol)]
+    return aHat
+end
+
 # cor(a,aHat)
 # #PBLUP 0.813
 
