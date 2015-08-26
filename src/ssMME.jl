@@ -69,7 +69,7 @@ function PBLUP(all_y,all_Z,all_A,all_num,vRes,vG)
     λ1 = vRes/vG
     y  = all_y.y
     Z  = all_Z.Z
-    Ai = All_A.Ai
+    Ai = all_A.Ai
 
     lhs = [hcat(pX'pX,    pX'Z );
             hcat(Z'pX,    Z'Z+Ai*λ1)]
