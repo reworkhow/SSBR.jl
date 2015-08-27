@@ -18,8 +18,9 @@ function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG)
     num_nongeno=all_num.num_g1
 
 
+    dimX = size(X,2)#add small numbers to diagonal of X'X in case X'X is singular
     ###solve MME
-    lhs = [hcat(X'X,    X'W,                     X1'Z1);
+    lhs = [hcat(X'X+eye(dimX)*0.001,    X'W,                     X1'Z1);
            hcat(W'X,    W'W+eye(num_markers)λ2,  W1'Z1);
            hcat(Z1'X1,  Z1'W1,                  Z1'Z1+Ai11*λ1 )]
 
