@@ -39,7 +39,8 @@ function ssMME(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG)
     alpha_hat=sol[start_marker:end_marker]
     epsi_hat = sol[start_epsi:end_epsi]
 
-    aHat = J*mu_g+M*alpha_hat
+    mu = sol[1]
+    aHat = mu+J*mu_g+M*alpha_hat
     aHat[1:num_nongeno,:] += epsi_hat
     return aHat,alpha_hat,beta_hat,epsi_hat
 end
