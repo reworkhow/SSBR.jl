@@ -72,7 +72,7 @@ function sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0
     return yCorr
 end
 
-function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter)
+function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter;outFreq=5000)
     
     vAlpha = vG/all_num.num_markers
     
@@ -107,7 +107,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample epsilon
       sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
 
-      if (iter%5000 ==0)
+      if (iter%outFreq ==0)
           println("This is iteration ",iter)
       end
     end
