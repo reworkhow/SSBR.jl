@@ -46,7 +46,7 @@ function sample_effects_ycorr!(X,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
 end
 
 function sample_effects_rhs!(lhs,rhs,b,vRes,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
-    n = size(lhs,1)
+    n = size(lhs,1)                                      #argument lhs here is a sparse matrix for whole lhs
     for (i in 1:n)
         b[i] = 0.0
         rhsi = rhs[i] - lhs[i,:]*b
@@ -59,7 +59,7 @@ function sample_effects_rhs!(lhs,rhs,b,vRes,bMean,iIter) #use this general funct
 end
 
 function sample_effects_rhsCol!(lhs,rhs,b,vRes,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
-    n = size(lhs,1)
+    n = size(lhs,1)                                         #arguments lhs here is a array of cols of lhs
     for (i in 1:n)
         b[i] = 0.0
         rhsi = rhs[i] - lhs[i]'b
