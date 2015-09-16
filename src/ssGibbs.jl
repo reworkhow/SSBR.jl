@@ -63,8 +63,8 @@ function sample_effects_rhsCol!(lhs,rhs,lhsDi,sd,b,bMean,iIter) #use this genera
     for (i in 1:n)
         b[i] = 0.0
         rhsi = rhs[i] - lhs[i]'b
-        meani  = lhsDi[i]*rhsi[1]
-        b[i] = meani + randn()*sd[i]
+        #meani  = lhsDi[i]*rhsi[1]
+        b[i] = lhsDi[i]*rhsi[1] + randn()*sd[i]
         bMean[i] += (b[i] - bMean[i])*iIter
     end
 end
