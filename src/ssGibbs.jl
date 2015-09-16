@@ -80,7 +80,7 @@ function sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ;
     #lhs = Z_1'Z_1+Ai11*λ
     #lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
 
-    sample_effects_rhsVec!(lhsCol,rhs,ϵ,vRes,meanEpsi,iIter) #use this general function for sample epsilon(Gianola Book)
+    sample_effects_rhsCol!(lhsCol,rhs,ϵ,vRes,meanEpsi,iIter) #use this general function for sample epsilon(Gianola Book)
 
     yCorr[:] = yCorr[:] - Z_1*ϵ
     return yCorr
