@@ -109,7 +109,8 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     
     xpx = [dot(X[:,i],X[:,i]) for i=1:size(X,2)]
     wpw = [dot(W[:,i],W[:,i]) for i=1:all_num.num_markers]
-    zpz = [(Z11[:,i]'Z11[:,i])[1,1] for i=1:all_num.num_g1]
+    #zpz = [(Z11[:,i]'Z11[:,i])[1,1] for i=1:all_num.num_g1]
+    zpz = diag(Z11'Z11)
 
     for iter = 1:nIter
 
