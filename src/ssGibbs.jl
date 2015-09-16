@@ -115,7 +115,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     Z_1 = all_Z.Z_1
     lhs = Z_1'Z_1+Ai11*λ_epsilon
     lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
-    lhsDi =1.0/diag(lhs)
+    lhsDi =1.0./diag(lhs)
     sd = sqrt(lhsDi*vRes)
 
     for iter = 1:nIter
