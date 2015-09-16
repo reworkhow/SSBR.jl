@@ -58,6 +58,19 @@ function sample_effects_rhs!(lhs,rhs,b,vRes,bMean,iIter) #use this general funct
     end
 end
 
+function sample_effects_rhsCol!(lhs,rhs,b,vRes,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
+    n = size(lhs,1)
+    for (i in 1:n)
+        b[i] = 0.0
+        rhsi = rhs[i] - lhs[i]'b
+        lhsi = lhs[i][i]
+        invLhs = 1.0/lhsi
+        meani  = invLhs*rhsi[1]
+        b[i] = meani + randn(1)[1]*sqrt(invLhs*vRes)
+        bMean[i] += (b[i] - bMean[i])*iIter
+    end
+end
+
 function sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
     λ = vRes/vG
     Z_1 = all_Z.Z_1
