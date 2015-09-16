@@ -69,7 +69,7 @@ function sample_effects_rhsCol!(lhs,rhs,lhsDi,sd,b,bMean,iIter) #use this genera
     end
 end
 
-function sampleEpsi!(all_Z,lhsCol,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
+function sampleEpsi!(all_Z,lhsCol,lhsDi,sd,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
     #λ = vRes/vG
     Z_1 = all_Z.Z_1
 
@@ -126,7 +126,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample marker effects
       sample_effects_ycorr!(W,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
       # sample epsilon
-      sampleEpsi!(all_Z,lhsCol,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
+      sampleEpsi!(all_Z,lhsCol,lhsDi,sd,yCorr,ϵ,meanEpsi,iIter)
 
       if (iter%outFreq ==0)
           println("This is iteration ",iter)
