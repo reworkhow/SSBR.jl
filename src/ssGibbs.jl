@@ -71,14 +71,14 @@ function sample_effects_rhsCol!(lhs,rhs,b,vRes,bMean,iIter) #use this general fu
     end
 end
 
-function sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
-    λ = vRes/vG
+function sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
+    #λ = vRes/vG
     Z_1 = all_Z.Z_1
 
     yCorr[:] = yCorr[:] + Z_1*ϵ #add back {Z1'Z1}_{i,i} *ϵ, n3 nonzeros #here Z1 is Z11
     rhs = Z_1'yCorr #
-    lhs = Z_1'Z_1+Ai11*λ
-    lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
+    #lhs = Z_1'Z_1+Ai11*λ
+    #lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
 
     sample_effects_rhsVec!(lhsCol,rhs,ϵ,vRes,meanEpsi,iIter) #use this general function for sample epsilon(Gianola Book)
 
@@ -111,6 +111,12 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     wpw = [dot(W[:,i],W[:,i]) for i=1:all_num.num_markers]
     #zpz = [(Z11[:,i]'Z11[:,i])[1,1] for i=1:all_num.num_g1]
     zpz = diag(Z11'Z11)
+    
+    #construct lhs for sampleEpsilon!
+    λ_epsilon = vRes/vG
+    Z_1 = all_Z.Z_1
+    lhs = Z_1'Z_1+Ai11*λ
+    lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
 
     for iter = 1:nIter
 
@@ -120,7 +126,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample marker effects
       sample_effects_ycorr!(W,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
       # sample epsilon
-      sampleEpsi!(all_Z,Ai11,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
+      sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
 
       if (iter%outFreq ==0)
           println("This is iteration ",iter)
