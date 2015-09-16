@@ -23,7 +23,7 @@ function sample_fixed_effects!(X,xpx,yCorr,α,meanAlpha,vRes,iIter)
         invLhs   = 1.0/lhs
         mean     = invLhs*rhs
         oldAlpha = α[j,1]
-        α[j]     = mean + randn(1)[1]*sqrt(invLhs*vRes)
+        α[j]     = mean + randn()*sqrt(invLhs*vRes)
         BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
         meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
     end
@@ -39,7 +39,7 @@ function sample_effects_ycorr!(X,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
         invLhs   = 1.0/lhs
         mean     = invLhs*rhs
         oldAlpha = α[j,1]
-        α[j]     = mean + randn(1)[1]*sqrt(invLhs*vRes)
+        α[j]     = mean + randn()*sqrt(invLhs*vRes)
         BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
         meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
     end
@@ -53,25 +53,23 @@ function sample_effects_rhs!(lhs,rhs,b,vRes,bMean,iIter) #use this general funct
         lhsi = lhs[i,i]
         invLhs = 1.0/lhsi
         meani  = invLhs*rhsi[1]
-        b[i] = meani + randn(1)[1]*sqrt(invLhs*vRes)
+        b[i] = meani + randn()*sqrt(invLhs*vRes)
         bMean[i] += (b[i] - bMean[i])*iIter
     end
 end
 
-function sample_effects_rhsCol!(lhs,rhs,b,vRes,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
+function sample_effects_rhsCol!(lhs,rhs,lhsDi,sd,b,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
     n = size(lhs,1)                                         #arguments lhs here is a array of cols of lhs
     for (i in 1:n)
         b[i] = 0.0
         rhsi = rhs[i] - lhs[i]'b
-        lhsi = lhs[i][i]
-        invLhs = 1.0/lhsi
-        meani  = invLhs*rhsi[1]
-        b[i] = meani + randn(1)[1]*sqrt(invLhs*vRes)
+        meani  = lhsDi[i]*rhsi[1]
+        b[i] = meani + randn()*sd[i]
         bMean[i] += (b[i] - bMean[i])*iIter
     end
 end
 
-function sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
+function sampleEpsi!(all_Z,lhsCol,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0] here to make it general but maybe slow
     #λ = vRes/vG
     Z_1 = all_Z.Z_1
 
@@ -80,7 +78,7 @@ function sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ;
     #lhs = Z_1'Z_1+Ai11*λ
     #lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
 
-    sample_effects_rhsCol!(lhsCol,rhs,ϵ,vRes,meanEpsi,iIter) #use this general function for sample epsilon(Gianola Book)
+    sample_effects_rhsCol!(lhsCol,rhs,lhsDi,sd,ϵ,meanEpsi,iIter) #use this general function for sample epsilon(Gianola Book)
 
     yCorr[:] = yCorr[:] - Z_1*ϵ
     return yCorr
@@ -117,6 +115,8 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     Z_1 = all_Z.Z_1
     lhs = Z_1'Z_1+Ai11*λ_epsilon
     lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
+    lhsDi =1.0/diag(lhs)
+    sd = sqrt(lhsDi*vRes)
 
     for iter = 1:nIter
 
@@ -126,7 +126,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample marker effects
       sample_effects_ycorr!(W,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
       # sample epsilon
-      sampleEpsi!(all_Z,lhsCol,zpz,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
+      sampleEpsi!(all_Z,lhsCol,vRes,vG,yCorr,ϵ,meanEpsi,iIter)
 
       if (iter%outFreq ==0)
           println("This is iteration ",iter)
