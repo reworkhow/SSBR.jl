@@ -5,13 +5,22 @@ type Results
 end
 
 function get_column(X,j)
-  nrow,ncol = size(X)
-  if j>ncol||j<0
-      error("column number is wrong!")
-  end
-  indx = 1 + (j-1)*nrow
-  ptr = pointer(X,indx)
-  pointer_to_array(ptr,nrow)
+    nrow,ncol = size(X)
+    if j>ncol||j<0
+        error("column number is wrong!")
+    end
+    indx = 1 + (j-1)*nrow
+    ptr = pointer(X,indx)
+    pointer_to_array(ptr,nrow)
+end
+
+function get_column_ref(X)
+    ncol = size(X)[2]
+    xArray = Array(Array{Float64,1},ncol)
+    for i=1:ncol
+        xArray[i] = get_column(X,i)
+    end
+    return xArray
 end
 
 function sample_fixed_effects!(X,xpx,yCorr,α,meanAlpha,vRes,iIter)
@@ -29,11 +38,11 @@ function sample_fixed_effects!(X,xpx,yCorr,α,meanAlpha,vRes,iIter)
     end
 end
 
-function sample_effects_ycorr!(X,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
+function sample_effects_ycorr!(X,xArray,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
     nObs,nEffects = size(X)
     λ    = vRes/vEff
     for j=1:nEffects
-        x = get_column(X,j)
+        x = xArray[j]
         rhs = dot(x,yCorr) + xpx[j]*α[j,1]
         lhs      = xpx[j] + λ
         invLhs   = 1.0/lhs
@@ -85,9 +94,9 @@ function sampleEpsi!(all_Z,lhsCol,lhsDi,sd,yCorr,ϵ,meanEpsi,iIter)#use [Z1 ; 0]
 end
 
 function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter;outFreq=5000)
-    
+
     vAlpha = vG/all_num.num_markers
-    
+
     y = all_y.y
     X = all_X.X
     W = all_W.W
@@ -104,12 +113,13 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     meanAlpha = zeros(Float64,all_num.num_markers)
     meanEpsi  = zeros(Float64,all_num.num_g1)
 
-    
+
+    wArray = get_column_ref(W)
     xpx = [dot(X[:,i],X[:,i]) for i=1:size(X,2)]
     wpw = [dot(W[:,i],W[:,i]) for i=1:all_num.num_markers]
     #zpz = [(Z11[:,i]'Z11[:,i])[1,1] for i=1:all_num.num_g1]
     zpz = diag(Z11'Z11)
-    
+
     #construct lhs for sampleEpsilon!
     λ_epsilon = vRes/vG
     Z_1 = all_Z.Z_1
@@ -124,7 +134,7 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample fixed effects
       sample_fixed_effects!(X,xpx,yCorr,β,meanBeta,vRes,iIter)
       # sample marker effects
-      sample_effects_ycorr!(W,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
+      sample_effects_ycorr!(W,wArray,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
       # sample epsilon
       sampleEpsi!(all_Z,lhsCol,lhsDi,sd,yCorr,ϵ,meanEpsi,iIter)
 
