@@ -38,7 +38,7 @@ function sample_fixed_effects!(X,xpx,yCorr,α,meanAlpha,vRes,iIter)
     end
 end
 
-function sample_effects_ycorr!(X,xArray,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
+function sample_effects_ycorr!(X,xArray,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)#sample vare and vara
     nObs,nEffects = size(X)
     λ    = vRes/vEff
     for j=1:nEffects
@@ -49,6 +49,19 @@ function sample_effects_ycorr!(X,xArray,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)
         mean     = invLhs*rhs
         oldAlpha = α[j,1]
         α[j]     = mean + randn()*sqrt(invLhs*vRes)
+        BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
+        meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
+    end
+end
+
+function sample_effects_ycorr!(X,xArray,xpx,yCorr,lhsDi,sd,α,meanAlpha,iIter)#sample vare and vara
+    nObs,nEffects = size(X)
+    for j=1:nEffects
+        x = xArray[j]
+        rhs = dot(x,yCorr) + xpx[j]*α[j,1]
+        mean     = lhsDi[j]*rhs
+        oldAlpha = α[j,1]
+        α[j]     = mean + randn()*sd[j]
         BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
         meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
     end
@@ -121,12 +134,17 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
     zpz = diag(Z11'Z11)
 
     #construct lhs for sampleEpsilon!
-    λ_epsilon = vRes/vG
-    Z_1 = all_Z.Z_1
-    lhs = Z_1'Z_1+Ai11*λ_epsilon
-    lhsCol=[lhs[:,i] for i=1:size(lhs,1)]
-    lhsDi =1.0./diag(lhs)
-    sd = sqrt(lhsDi*vRes)
+    λ_epsilon       = vRes/vG
+    Z_1             = all_Z.Z_1
+    lhs_epsilon     = Z_1'Z_1+Ai11*λ_epsilon
+    lhsCol_epsilon  = [lhs_epsilon[:,i] for i=1:size(lhs_epsilon,1)]
+    lhsDi_epsilon   = 1.0./diag(lhs_epsilon)
+    sd_epsilon      = sqrt(lhsDi_epsilon*vRes)
+
+    λ        = vRes/vAlpha
+    lhsDi    = [1.0/(wpw[i]+λ)::Float64 for i=1:size(wpw,1)]
+    sd       = sqrt(lhsDi*vRes)
+
 
     for iter = 1:nIter
 
@@ -134,9 +152,9 @@ function ssGibbs(all_M,all_y,all_J,all_Z,all_X,all_W,all_A,all_num,vRes,vG,nIter
       # sample fixed effects
       sample_fixed_effects!(X,xpx,yCorr,β,meanBeta,vRes,iIter)
       # sample marker effects
-      sample_effects_ycorr!(W,wArray,wpw,yCorr,α,meanAlpha,vRes,vAlpha,iIter)
+      sample_effects_ycorr!(W,wArray,wpw,yCorr,lhsDi,sd,α,meanAlpha,iIter)
       # sample epsilon
-      sampleEpsi!(all_Z,lhsCol,lhsDi,sd,yCorr,ϵ,meanEpsi,iIter)
+      sampleEpsi!(all_Z,lhsCol_epsilon,lhsDi_epsilon,sd_epsilon,yCorr,ϵ,meanEpsi,iIter)
 
       if (iter%outFreq ==0)
           println("This is iteration ",iter)
