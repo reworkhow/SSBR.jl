@@ -54,16 +54,16 @@ function sample_effects_ycorr!(X,xArray,xpx,yCorr,α,meanAlpha,vRes,vEff,iIter)#
     end
 end
 
-function sample_effects_ycorr!(X,xArray,xpx,yCorr,lhsDi,sd,α,meanAlpha,iIter)#sample vare and vara
+function sample_effects_ycorr!(X,xArray,xpx,yCorr,lhsDi,sd,α,meanAlpha,iIter)#not sample vare and vara
     nObs,nEffects = size(X)
     for j=1:nEffects
-        x = xArray[j]
-        rhs = dot(x,yCorr) + xpx[j]*α[j,1]
-        mean     = lhsDi[j]*rhs
-        oldAlpha = α[j,1]
-        α[j]     = mean + randn()*sd[j]
-        BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
-        meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
+        @inbounds x = xArray[j]
+        @inbounds rhs = dot(x,yCorr) + xpx[j]*α[j,1]
+        @inbounds mean     = lhsDi[j]*rhs
+        @inbounds oldAlpha = α[j,1]
+        @inbounds α[j]     = mean + randn()*sd[j]
+        @inbounds BLAS.axpy!(oldAlpha-α[j,1],x,yCorr)
+        @inbounds meanAlpha[j] += (α[j] - meanAlpha[j])*iIter
     end
 end
 
@@ -83,11 +83,11 @@ end
 function sample_effects_rhsCol!(lhs,rhs,lhsDi,sd,b,bMean,iIter) #use this general function for sample epsilon(Gianola Book)
     n = size(lhs,1)                                         #arguments lhs here is a array of cols of lhs
     for (i in 1:n)
-        b[i] = 0.0
-        rhsi = rhs[i] - lhs[i]'b
+        @inbounds b[i] = 0.0
+        @inbounds rhsi = rhs[i] - lhs[i]'b
         #meani  = lhsDi[i]*rhsi[1]
-        b[i] = lhsDi[i]*rhsi[1] + randn()*sd[i]
-        bMean[i] += (b[i] - bMean[i])*iIter
+        @inbounds b[i] = lhsDi[i]*rhsi[1] + randn()*sd[i]
+        @inbounds bMean[i] += (b[i] - bMean[i])*iIter
     end
 end
 
