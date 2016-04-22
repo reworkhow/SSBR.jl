@@ -1,6 +1,6 @@
 # SSBR
 
-**This repository is deprecated and update SSBR is  under organization [QTL-rocks](https://github.com/QTL-rocks) **
+> This repository is deprecated and update SSBR is  under organization [QTL-rocks](https://github.com/QTL-rocks)
 
 SSBR is a tool for single step Bayesian regression analyses.
 
