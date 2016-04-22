@@ -1,6 +1,6 @@
 # SSBR
 
-[![Build Status](https://travis-ci.org/reworkhow/SSBR.jl.svg?branch=master)](https://travis-ci.org/reworkhow/SSBR.jl)
+**This repository is deprecated and update SSBR is  under organization [QTL-rocks](https://github.com/QTL-rocks) **
 
 SSBR is a tool for single step Bayesian regression analyses.
 
